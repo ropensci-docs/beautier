@@ -1,0 +1,12 @@
+pandoc: '2.5'
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  demo: demo.html
+  examples: examples.html
+  inference_models: inference_models.html
+last_built: 2021-07-14T20:01Z
+urls:
+  reference: https://docs.ropensci.org/beautier/reference
+  article: https://docs.ropensci.org/beautier/articles
+

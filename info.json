@@ -1,0 +1,12 @@
+{
+  "commit": {
+    "commit": "81e4fa5417aaa3ef30f3528198aab39e43e11c1a",
+    "author": "richelbilderbeek <richel@richelbilderbeek.nl>",
+    "time": "2021-07-03 07:41:17",
+    "files": 1,
+    "merge": false,
+    "message": "Never clear user's cache\n"
+  },
+  "remote": "https://github.com/ropensci/beautier",
+  "pkg": "beautier"
+}
