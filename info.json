@@ -1,0 +1,13 @@
+{
+  "commit": {
+    "commit": "e2184775ea9b577a76b7a5935ed632723abb2bd5",
+    "author": "richelbilderbeek <rjcbilderbeek@gmail.com>",
+    "time": "2025-12-08T18:28:22Z",
+    "files": 2,
+    "merge": false,
+    "message": "Fix R style\n"
+  },
+  "repo": "https://github.com/ropensci/beautier",
+  "pkg": "beautier",
+  "time": "2026-08-30T07:40:14Z"
+}
