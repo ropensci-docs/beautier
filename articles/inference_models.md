@@ -1,0 +1,237 @@
+# Inference Models
+
+## Introduction
+
+![](beautier_logo.png)
+
+`beautier` allows to specify an inference model, from which, together
+with a DNA alignment, a posterior (holding a distribution of phylogenies
+and jointly-estimated parameter estimates) can be inferred.
+
+The inference model entails the evolutionary model used in inference, as
+well as some settings to do the inference.
+
+This vignette shows the options how to specify an inference model, and
+which options are possible.
+
+## Getting started
+
+First, load `beautier`:
+
+``` r
+
+library(beautier)
+```
+
+Now, we’ll look at the default inference model to get an idea of what an
+inference model entails.
+
+## Default inference model
+
+Creating a default inference model is easy:
+
+``` r
+
+inference_model <- create_inference_model()
+```
+
+An inference model is a list, that uses the BEAST2 defaults. Here are
+the elements of that list:
+
+``` r
+
+names(inference_model)
+#> [1] "site_model"        "clock_model"       "tree_prior"       
+#> [4] "mrca_prior"        "mcmc"              "beauti_options"   
+#> [7] "tipdates_filename"
+```
+
+As we can see, an inference model entails these elements, which we will
+cover below in more detail:
+
+- a site model: how the alignment changes
+- a clock model: how the mutation rates differ over the branches
+- a tree prior: the speciation model
+- (optional) an MRCA prior: a ‘Most Recent Common Ancestor’
+- an MCMC: the Markov Chain Monte Carlo setup
+- (optional) BEAUti options: version-specific options
+- (experimental) a tipdates filename: a filename for tip-dating
+
+### Site models
+
+The site model entails how the alignment changes over time. Currently,
+`beautier` supplies a gamma site model. One element of a site model, for
+DNA/RNA, is the nucleotide substitution model (‘NSM’).
+
+Due to historical reasons, `beautier` confuses the site model and NSM:
+`beautier` has no functions with the word ‘nucleotide substitution’ (nor
+`nsm`) \`in it. Instead, it is as if these are specific site models.
+
+To see the available site models, use
+[`?create_site_model`](https://docs.ropensci.org/beautier/reference/create_site_model.md)
+to see a list, or use:
+
+``` r
+
+get_site_model_names()
+#> [1] "JC69" "HKY"  "TN93" "GTR"
+```
+
+The simplest NSM is the JC69 NSM, which assumes all nucleotides are
+substituted by one another at the same rate. As an example, to use a
+gamma site model with the JC69 NSM model in inference:
+
+``` r
+
+inference_model <- create_inference_model(
+  site_model = create_jc69_site_model()
+)
+```
+
+### Clock models
+
+The clock model entails how the mutation rates differ over the branches.
+
+To see the available site models, use
+[`?create_clock_model`](https://docs.ropensci.org/beautier/reference/create_clock_model.md)
+to see a list, or use:
+
+``` r
+
+get_clock_model_names()
+#> [1] "relaxed_log_normal" "strict"
+```
+
+The simplest clock model is the strict clock model, which assumes all
+branches have the same mutation rate. As an example, to use a strict
+clock model in inference:
+
+``` r
+
+inference_model <- create_inference_model(
+  clock_model = create_strict_clock_model()
+)
+```
+
+## Tree prior
+
+The tree prior is the tree model used in inference. It is called ‘tree
+prior’ instead of ‘tree model’, as this follow the BEAUti naming. The
+tree model specifies the branching process of a tree.
+
+To see the available tree models, use
+[`?create_tree_prior`](https://docs.ropensci.org/beautier/reference/create_tree_prior.md)
+to see a list, or use:
+
+``` r
+
+get_tree_prior_names()
+#> [1] "birth_death"                    "coalescent_bayesian_skyline"   
+#> [3] "coalescent_constant_population" "coalescent_exp_population"     
+#> [5] "yule"
+```
+
+The simplest tree model is the Yule (aka pure-birth) tree model, which
+assumes that branching events occur at a constant rate, and there are no
+extinctions. As an example, to use a Yule tree model in inference:
+
+``` r
+
+inference_model <- create_inference_model(
+  tree_prior = create_yule_tree_prior()
+)
+```
+
+## (optional) MRCA prior: a ‘Most Recent Common Ancestor’
+
+With the MRCA (‘Most Recent Common Ancestor’) prior, one can specify
+which tips share a common ancestor.
+
+``` r
+
+# The alignmet
+fasta_filename <- get_beautier_path("anthus_aco.fas")
+
+# The alignment's ID
+alignment_id <- get_alignment_id(fasta_filename)
+
+# Get the first two taxa's names
+taxa_names <- get_taxa_names(fasta_filename)[1:2]
+
+# Specify that the first two taxa share a common ancestor
+mrca_prior <- create_mrca_prior(
+  alignment_id = alignment_id,
+  taxa_names = taxa_names
+)
+
+# Use the MRCA prior in inference
+inference_model <- create_inference_model(
+  mrca_prior = mrca_prior
+)
+```
+
+## MCMC: the Markov Chain Monte Carlo setup
+
+The MCMC (‘Markov Chain Monte Carlo’) specifies how the inference
+algorithm does its work.
+
+The available MCMC’s can be found using
+[`?create_mcmc`](https://docs.ropensci.org/beautier/reference/create_mcmc.md)
+and are:
+
+- `create_mcmc`: regular MCMC
+- `create_test_mcmc`: shorter regular MCMC, to be used in testing
+- `create_ns_mcmc`: MCMC to estimate a marginal likelihood using nested
+  sampling
+
+## (optional) BEAUti options: version-specific options
+
+The BEAUti options entail version-specific options to store an inference
+model as a BEAST2 XML input file.
+
+The available BEAUti options can be found using
+[`?create_beauti_options`](https://docs.ropensci.org/beautier/reference/create_beauti_options.md)
+and are:
+
+- `create_beauti_options_v2_4`: BEAUti v2.4
+- `create_beauti_options_v2_6`: BEAUti v2.6
+
+Using a specific version for an inference:
+
+``` r
+
+inference_model <- create_inference_model(
+  beauti_options = create_beauti_options_v2_4()
+)
+```
+
+## (experimental) a tipdates filename: a filename for tip-dating
+
+A tipdates filename is an experimental feature for tip-dating:
+
+``` r
+
+inference_model <- create_inference_model(
+  tipdates_filename = get_beautier_path("G_VII_pre2003_dates_4.txt")
+)
+```
+
+The tipdates filename and the alignment must be compatible. Here is an
+example:
+
+``` r
+
+output_filename <- get_beautier_tempfilename()
+
+create_beast2_input_file_from_model(
+  input_filename = get_beautier_path("G_VII_pre2003_msa.fas"),
+  inference_model = inference_model,
+  output_filename = output_filename
+)
+# Cleanup
+file.remove(output_filename)
+#> [1] TRUE
+
+beautier::remove_beautier_folder()
+beautier::check_empty_beautier_folder()
+```

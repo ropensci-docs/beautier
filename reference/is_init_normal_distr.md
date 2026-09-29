@@ -1,0 +1,25 @@
+# Determine if x is an initialized normal distribution object as created by [`create_normal_distr`](https://docs.ropensci.org/beautier/reference/create_normal_distr.md)
+
+Determine if x is an initialized normal distribution object as created
+by
+[`create_normal_distr`](https://docs.ropensci.org/beautier/reference/create_normal_distr.md)
+
+## Usage
+
+``` r
+is_init_normal_distr(x)
+```
+
+## Arguments
+
+- x:
+
+  the object to check if it is an initialized normal distribution object
+
+## Value
+
+TRUE if x is an initialized normal distribution object
+
+## Author
+
+Richèl J.C. Bilderbeek
